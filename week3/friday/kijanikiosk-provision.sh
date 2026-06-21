@@ -67,4 +67,17 @@ mkdir -p /opt/kijanikiosk/health
 
 chmod 750 /opt/kijanikiosk/config
 
+# Configure ACLs for shared logs
+
+setfacl -m u:kk-api:rwx /opt/kijanikiosk/shared/logs
+setfacl -m u:kk-payments:rx /opt/kijanikiosk/shared/logs
+setfacl -m u:kk-logs:rwx /opt/kijanikiosk/shared/logs
+
+# Default ACLs for future files
+setfacl -d -m u:kk-api:rwx /opt/kijanikiosk/shared/logs
+setfacl -d -m u:kk-payments:rx /opt/kijanikiosk/shared/logs
+setfacl -d -m u:kk-logs:rwx /opt/kijanikiosk/shared/logs
+
+log "ACLs configured"
+
 log "Directory structure verified"
