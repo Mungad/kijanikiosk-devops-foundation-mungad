@@ -1,0 +1,43 @@
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getent passwd kk-api kk-payments kk-logs
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getent group kijanikiosk
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ ls -la /opt/kijanikiosk/
+ls: cannot access '/opt/kijanikiosk/': No such file or directory
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getfacl /opt/kijanikiosk/shared/logs/ 2>/dev/null
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getfacl /opt/kijanikiosk/config/ 2>/dev/null
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ sudo ufw status numbered
+[sudo: authenticate] Password:       
+Status: inactive
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ apt-mark showhold
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ systemctl list-unit-files | grep kk-
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ du -sh /opt/kijanikiosk/shared/logs/
+du: cannot access '/opt/kijanikiosk/shared/logs/': No such file or directory
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ journalctl --disk-usage
+Archived and active journals take up 77M in the file system.
+
+Interpretation
+
+The VM appears to be clean.
+
+Dirty-state conditions from previous labs are not present:
+- Service accounts do not exist
+- KijaniKiosk group does not exist
+- Application directories do not exist
+- ACLs are not configured
+- Firewall is inactive
+- No package holds detected
+- No kk-* systemd services detected
+
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ #Verifying the dirty states
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getent passwd kk-api kk-payments kk-logs
+kk-api:x:997:1001::/home/kk-api:/usr/sbin/nologin
+kk-payments:x:994:1001::/home/kk-payments:/usr/sbin/nologin
+kk-logs:x:993:1001::/home/kk-logs:/usr/sbin/nologin
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getent group kijanikiosk
+kijanikiosk:x:1001:
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ ls -ld /opt/kijanikiosk/config
+drwxrwxrwx 2 root root 4096 Jun 21 23:45 /opt/kijanikiosk/config
+daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ ls -ld /opt/kijanikiosk/shared/logs
+drwxr-xr-x 2 root root 4096 Jun 21 23:45 /opt/kijanikiosk/shared/logs
+
+Interpretation:
+This VM was initially clean. Dirty state was simulated according to project instructions so idempotency testing can be performed. The provisioning script must detect existing users, existing directories, and incorrect permissions and converge them to the required state.
