@@ -151,3 +151,15 @@ systemctl enable kk-payments.service
 systemctl enable kk-logs.service
 
 log "Systemd services configured"
+
+phase "PHASE 5 - VERIFICATION"
+
+systemctl is-enabled kk-api.service >/dev/null
+systemctl is-enabled kk-payments.service >/dev/null
+systemctl is-enabled kk-logs.service >/dev/null
+
+log "All services verified"
+
+getfacl /opt/kijanikiosk/shared/logs >/dev/null
+
+log "ACL verification passed"
