@@ -160,6 +160,6 @@ systemctl is-enabled kk-logs.service >/dev/null
 
 log "All services verified"
 
-getfacl /opt/kijanikiosk/shared/logs >/dev/null
+getfacl /opt/kijanikiosk/shared/logs >/dev/null 2>&1
 
 log "ACL verification passed"
