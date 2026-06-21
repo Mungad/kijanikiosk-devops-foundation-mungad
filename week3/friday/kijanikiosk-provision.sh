@@ -81,3 +81,73 @@ setfacl -d -m u:kk-logs:rwx /opt/kijanikiosk/shared/logs
 log "ACLs configured"
 
 log "Directory structure verified"
+
+
+phase "PHASE 4 - SYSTEMD SERVICES"
+
+cat > /etc/systemd/system/kk-api.service << 'EOF'
+[Unit]
+Description=KijaniKiosk API Service
+
+[Service]
+User=kk-api
+Group=kijanikiosk
+ExecStart=/usr/bin/sleep infinity
+Restart=always
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /etc/systemd/system/kk-payments.service << 'EOF'
+[Unit]
+Description=KijaniKiosk Payments Service
+After=kk-api.service
+Wants=kk-api.service
+
+[Service]
+User=kk-payments
+Group=kijanikiosk
+ExecStart=/usr/bin/sleep infinity
+Restart=always
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /etc/systemd/system/kk-logs.service << 'EOF'
+[Unit]
+Description=KijaniKiosk Logging Service
+
+[Service]
+User=kk-logs
+Group=kijanikiosk
+ExecStart=/usr/bin/sleep infinity
+Restart=always
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+
+systemctl enable kk-api.service
+systemctl enable kk-payments.service
+systemctl enable kk-logs.service
+
+log "Systemd services configured"
