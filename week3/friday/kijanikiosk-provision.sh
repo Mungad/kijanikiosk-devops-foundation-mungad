@@ -96,6 +96,23 @@ log "ACLs configured"
 
 log "Directory structure verified"
 
+phase "PHASE 5 - FIREWALL"
+
+ufw --force reset
+
+ufw default deny incoming
+ufw default allow outgoing
+
+ufw allow 22/tcp comment 'SSH access'
+ufw allow 80/tcp comment 'HTTP access'
+
+ufw allow from 10.0.1.0/24 to any port 3001 proto tcp comment 'Monitoring subnet health checks'
+
+ufw deny 3001/tcp comment 'Block external access to payments port'
+
+ufw --force enable
+
+log "Firewall configured"
 
 phase "PHASE 6 - SYSTEMD SERVICES"
 
