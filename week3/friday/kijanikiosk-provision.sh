@@ -43,7 +43,21 @@ if [ "$perm" = "777" ]; then
     log "FOUND: insecure config permissions (777)"
 fi
 
-phase "PHASE 2 - USERS & GROUPS"
+phase "PHASE 2 - PACKAGE & VERSION CHECKS"
+
+for pkg in curl ufw acl; do
+    if dpkg -s "$pkg" >/dev/null 2>&1; then
+        log "PACKAGE OK: $pkg installed"
+    else
+        log "INSTALLING: $pkg"
+        apt-get update -y
+        apt-get install -y "$pkg"
+    fi
+done
+
+log "Package verification completed"
+
+phase "PHASE 3 - USERS & GROUPS"
 
 getent group kijanikiosk >/dev/null || \
 groupadd kijanikiosk
@@ -59,7 +73,7 @@ useradd -r -g kijanikiosk -s /usr/sbin/nologin kk-logs
 
 log "Users and group verified"
 
-phase "PHASE 3 - DIRECTORY STRUCTURE & ACLS"
+phase "PHASE 4 - DIRECTORY STRUCTURE & ACLS"
 
 mkdir -p /opt/kijanikiosk/config
 mkdir -p /opt/kijanikiosk/shared/logs
@@ -83,7 +97,7 @@ log "ACLs configured"
 log "Directory structure verified"
 
 
-phase "PHASE 4 - SYSTEMD SERVICES"
+phase "PHASE 6 - SYSTEMD SERVICES"
 
 cat > /etc/systemd/system/kk-api.service << 'EOF'
 [Unit]
@@ -152,7 +166,7 @@ systemctl enable kk-logs.service
 
 log "Systemd services configured"
 
-phase "PHASE 5 - VERIFICATION"
+phase "FINAL VERIFICATION"
 
 systemctl is-enabled kk-api.service >/dev/null
 systemctl is-enabled kk-payments.service >/dev/null
