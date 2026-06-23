@@ -183,6 +183,49 @@ systemctl enable kk-logs.service
 
 log "Systemd services configured"
 
+phase "PHASE 7 - JOURNAL PERSISTENCE & LOGROTATE"
+
+mkdir -p /var/log/journal
+
+cat > /etc/systemd/journald.conf <<EOF
+[Journal]
+Storage=persistent
+SystemMaxUse=500M
+EOF
+
+systemctl restart systemd-journald
+
+cat > /etc/logrotate.d/kijanikiosk <<EOF
+/opt/kijanikiosk/shared/logs/*.log {
+    weekly
+    rotate 4
+    missingok
+    notifempty
+    compress
+    create 0640 root kijanikiosk
+}
+EOF
+
+logrotate --debug /etc/logrotate.d/kijanikiosk >/dev/null 2>&1
+
+log "Journal persistence configured"
+log "Logrotate configuration verified"
+
+phase "PHASE 8 - MONITORING HEALTH CHECKS"
+
+api_status=$(timeout 2 bash -c "echo >/dev/tcp/localhost/3000" 2>/dev/null && echo '"ok"' || echo '"down"')
+
+payments_status=$(timeout 2 bash -c "echo >/dev/tcp/localhost/3001" 2>/dev/null && echo '"ok"' || echo '"down"')
+
+printf '{"timestamp":"%s","kk-api":%s,"kk-payments":%s}\n' \
+"$(date -Is)" "$api_status" "$payments_status" \
+> /opt/kijanikiosk/health/last-provision.json
+
+chown kk-logs:kijanikiosk /opt/kijanikiosk/health/last-provision.json
+chmod 640 /opt/kijanikiosk/health/last-provision.json
+
+log "Health check JSON created"
+
 phase "FINAL VERIFICATION"
 
 systemctl is-enabled kk-api.service >/dev/null
