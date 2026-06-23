@@ -114,6 +114,24 @@ ufw --force enable
 
 log "Firewall configured"
 
+status=$(ufw status)
+
+echo "$status" | grep -q "22/tcp.*ALLOW" \
+  && log "PASS: SSH rule present" \
+  || { log "FAIL: SSH rule missing"; exit 1; }
+
+echo "$status" | grep -q "80/tcp.*ALLOW" \
+  && log "PASS: HTTP rule present" \
+  || { log "FAIL: HTTP rule missing"; exit 1; }
+
+echo "$status" | grep -q "3001/tcp.*ALLOW.*10.0.1.0/24" \
+  && log "PASS: Monitoring subnet rule present" \
+  || { log "FAIL: Monitoring subnet rule missing"; exit 1; }
+
+echo "$status" | grep -q "3001/tcp.*DENY" \
+  && log "PASS: External deny rule present" \
+  || { log "FAIL: External deny rule missing"; exit 1; }
+
 phase "PHASE 6 - SYSTEMD SERVICES"
 
 cat > /opt/kijanikiosk/config/api.env <<EOF
@@ -324,3 +342,4 @@ log "All services verified"
 getfacl /opt/kijanikiosk/shared/logs >/dev/null 2>&1
 
 log "ACL verification passed"
+
