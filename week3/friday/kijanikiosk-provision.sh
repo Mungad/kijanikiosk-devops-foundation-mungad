@@ -116,6 +116,21 @@ log "Firewall configured"
 
 phase "PHASE 6 - SYSTEMD SERVICES"
 
+cat > /opt/kijanikiosk/config/api.env <<EOF
+PORT=3000
+EOF
+
+cat > /opt/kijanikiosk/config/payments.env <<EOF
+PORT=3001
+EOF
+
+cat > /opt/kijanikiosk/config/logs.env <<EOF
+LOG_LEVEL=INFO
+EOF
+
+chown root:kijanikiosk /opt/kijanikiosk/config/*.env
+chmod 640 /opt/kijanikiosk/config/*.env
+
 cat > /etc/systemd/system/kk-api.service << 'EOF'
 [Unit]
 Description=KijaniKiosk API Service
@@ -123,13 +138,31 @@ Description=KijaniKiosk API Service
 [Service]
 User=kk-api
 Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/api.env
+
 ExecStart=/usr/bin/sleep infinity
 Restart=always
 
 NoNewPrivileges=yes
 PrivateTmp=yes
+PrivateDevices=yes
+
 ProtectSystem=strict
 ProtectHome=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+
+MemoryDenyWriteExecute=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+RestrictNamespaces=yes
+SystemCallArchitectures=native
+
+CapabilityBoundingSet=
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target
@@ -144,15 +177,33 @@ Wants=kk-api.service
 [Service]
 User=kk-payments
 Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/payments.env
+
 ExecStart=/usr/bin/sleep infinity
 Restart=always
 
 NoNewPrivileges=yes
 PrivateTmp=yes
+PrivateDevices=yes
+
 ProtectSystem=strict
 ProtectHome=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
 ProtectKernelTunables=yes
 ProtectKernelModules=yes
+
+MemoryDenyWriteExecute=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+RestrictNamespaces=yes
+SystemCallArchitectures=native
+
+CapabilityBoundingSet=
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target
@@ -165,11 +216,31 @@ Description=KijaniKiosk Logging Service
 [Service]
 User=kk-logs
 Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/logs.env
+
 ExecStart=/usr/bin/sleep infinity
 Restart=always
 
 NoNewPrivileges=yes
 PrivateTmp=yes
+PrivateDevices=yes
+
+ProtectSystem=strict
+ProtectHome=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+
+MemoryDenyWriteExecute=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+RestrictNamespaces=yes
+SystemCallArchitectures=native
+
+CapabilityBoundingSet=
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target
