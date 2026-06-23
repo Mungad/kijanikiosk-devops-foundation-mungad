@@ -6,7 +6,6 @@ This project provisions a secure production-ready foundation for KijaniKiosk usi
 
 The provisioning script can be executed multiple times safely without creating duplicate resources or causing configuration failures.
 
----
 
 ## Features
 
@@ -20,7 +19,6 @@ Three dedicated system service accounts are created to enforce separation of dut
 
 All accounts are configured with the `nologin` shell to prevent interactive user access.
 
----
 
 ### User Group Management
 
@@ -30,7 +28,6 @@ A shared service group is created:
 
 This group provides controlled resource sharing between KijaniKiosk services while maintaining service isolation.
 
----
 
 ### Directory Structure
 
@@ -52,7 +49,6 @@ Directory purposes:
 | `/opt/kijanikiosk/shared/logs` | Shared service logs                       |
 | `/opt/kijanikiosk/health`      | Health check and provisioning status data |
 
----
 
 ### Security Controls
 
@@ -78,7 +74,6 @@ Fine-grained permissions are implemented using POSIX ACLs:
 
 Default ACLs are also configured to ensure permissions remain intact when new files are created or rotated.
 
----
 
 ### Firewall Configuration
 
@@ -96,7 +91,6 @@ Restricted traffic:
 
 This reduces the attack surface while maintaining required service accessibility.
 
----
 
 ### Systemd Service Management
 
@@ -112,7 +106,6 @@ Each service:
 * Uses automatic restart policies
 * Is enabled to start automatically on boot
 
----
 
 ### Systemd Security Hardening
 
@@ -141,7 +134,6 @@ systemd-analyze security
 
 with all services achieving an **OK** security rating.
 
----
 
 ### Logging and Retention
 
@@ -163,7 +155,6 @@ Log retention is managed using Logrotate to:
 * Retain historical logs
 * Automate cleanup of old log files
 
----
 
 ### Health Monitoring
 
@@ -181,7 +172,6 @@ The file contains:
 
 This provides a lightweight monitoring and audit mechanism.
 
----
 
 ## Idempotency
 
@@ -200,7 +190,6 @@ Resources checked include:
 
 This allows the script to be executed repeatedly without causing duplicate resources or configuration errors.
 
----
 
 ## Verification
 
@@ -218,7 +207,6 @@ The script performs automated verification of:
 
 Successful execution concludes with a final verification phase confirming that all required components have been provisioned correctly.
 
----
 
 ## Running the Provisioning Script
 
@@ -230,7 +218,6 @@ sudo ./kijanikiosk-provision.sh
 
 The script will audit the existing environment, provision missing resources, apply security controls, and perform final verification checks.
 
----
 
 ## Security Principles Applied
 
