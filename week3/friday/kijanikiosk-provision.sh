@@ -164,6 +164,11 @@ SystemCallArchitectures=native
 CapabilityBoundingSet=
 UMask=0077
 
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=yes
+RestrictAddressFamilies=AF_UNIX
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -205,6 +210,12 @@ SystemCallArchitectures=native
 CapabilityBoundingSet=
 UMask=0077
 
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=yes
+RestrictAddressFamilies=AF_UNIX
+
+RemoveIPC=yes
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -241,6 +252,11 @@ SystemCallArchitectures=native
 
 CapabilityBoundingSet=
 UMask=0077
+
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=yes
+RestrictAddressFamilies=AF_UNIX
 
 [Install]
 WantedBy=multi-user.target
