@@ -15,7 +15,7 @@
 
 - name: Copy index.html to remote server
   copy:
-    src: ./files/index.html
+    src: index.html
     dest: /var/www/html/index.html
     owner: www-data
     group: www-data
