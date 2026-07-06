@@ -17,3 +17,11 @@ locals {
     }
   }
 }
+
+module "app_server" {
+  source = "./modules/app_server"
+
+  for_each = local.servers
+
+  name = each.value.name
+}

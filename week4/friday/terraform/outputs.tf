@@ -1,8 +1,8 @@
 output "server_names" {
-  description = "Multipass VM names"
+  description = "Server names"
 
   value = {
-    for name, server in local.servers :
-    name => server.name
+    for key, server in module.app_server :
+    key => server.name
   }
 }
