@@ -1,15 +1,17 @@
-variable "aws_region" {
+variable "environment" {
+  description = "Deployment environment"
   type        = string
-  description = "AWS region to deploy resources"
-  default     = "us-east-1"
+  default     = "staging"
 }
 
-variable "aws_access_key" {
+variable "ssh_user" {
+  description = "SSH username"
   type        = string
-  description = "AWS access key"
+  default     = "ubuntu"
 }
 
-variable "aws_secret_key" {
+variable "ssh_private_key" {
+  description = "SSH private key path"
   type        = string
-  description = "AWS secret key"
+  default     = "~/.ssh/id_ed25519"
 }

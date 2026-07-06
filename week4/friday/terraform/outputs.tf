@@ -1,12 +1,8 @@
-output "security_group_id" {
-  value = module.server_sg.id
-}
+output "server_names" {
+  description = "Multipass VM names"
 
-output "server_ids" {
-  value = { for k, m in module.servers : k => m.id }
+  value = {
+    for name, server in local.servers :
+    name => server.name
+  }
 }
-
-output "server_public_ips" {
-  value = { for k, m in module.servers : k => m.public_ip }
-}
-
