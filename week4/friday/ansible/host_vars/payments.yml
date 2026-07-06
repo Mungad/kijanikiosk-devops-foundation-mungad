@@ -1,0 +1,6 @@
+---
+service_name: kk-payments
+service_user: kk-payments
+
+env:
+  PORT: 3001

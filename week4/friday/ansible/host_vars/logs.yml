@@ -1,0 +1,6 @@
+---
+service_name: kk-logs
+service_user: kk-logs
+
+env:
+  LOG_LEVEL: INFO

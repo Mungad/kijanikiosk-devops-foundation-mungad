@@ -1,12 +1,7 @@
-- hosts: all
+---
+- name: Configure KijaniKiosk servers
+  hosts: kijanikiosk
   become: true
+
   roles:
-    - apache
-
-  handlers:
-    - name: Restart Apache
-      service:
-        name: apache2
-        state: restarted    
-
-  
+    - kijanikiosk
