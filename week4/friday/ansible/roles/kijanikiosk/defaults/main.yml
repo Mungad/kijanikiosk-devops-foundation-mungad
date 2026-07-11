@@ -1,3 +1,18 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# defaults file for roles/kijanikiosk
+packages:
+  - apache2
+  - curl
+  - acl
+  - ufw
+
+kijani_group: kijanikiosk
+
+users:
+  - kk-api
+  - kk-payments
+  - kk-logs
+
+directories:
+  - /opt/kijanikiosk/config
+  - /opt/kijanikiosk/shared/logs
+  - /opt/kijanikiosk/health
