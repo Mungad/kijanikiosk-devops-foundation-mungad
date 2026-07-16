@@ -1,0 +1,23 @@
+{
+  "name": "kijanikiosk-payments",
+  "version": "1.0.0",
+  "description": "KijaniKiosk Payments Service",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src",
+    "build": "mkdir -p dist && cp -r src/* dist/",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Daisy Munga",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
+}
