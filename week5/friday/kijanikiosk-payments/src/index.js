@@ -18,3 +18,4 @@ if (require.main === module) {
         console.log(`Payments service running on port ${PORT}`);
     });
 }
+// Second pipeline artifact version test
