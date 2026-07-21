@@ -1,0 +1,229 @@
+Started by user Daisy Munga
+Obtained Jenkinsfile from git https://github.com/Mungad/kijanikiosk-devops-foundation-mungad.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/KijaniKiosk Pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/Mungad/kijanikiosk-devops-foundation-mungad.git
+ > git init /var/jenkins_home/workspace/KijaniKiosk Pipeline # timeout=10
+Fetching upstream changes from https://github.com/Mungad/kijanikiosk-devops-foundation-mungad.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/Mungad/kijanikiosk-devops-foundation-mungad.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/Mungad/kijanikiosk-devops-foundation-mungad.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/feature/week5-ci-pipeline^{commit} # timeout=10
+Checking out Revision 261f43803e81fef3c81c628043ba3b32edcdce21 (refs/remotes/origin/feature/week5-ci-pipeline)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 261f43803e81fef3c81c628043ba3b32edcdce21 # timeout=10
+Commit message: "Fix Nexus publish cleanup and post conditions"
+ > git rev-list --no-walk f87d0d0d6e4d48cdb7f40a78e80ca5de140eb328 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . node:20
+.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins seems to be running inside container f85f636db4231310a539926ee5bef37e45aff764413b1c3a23013e1f336eeb1d
+$ docker run -t -d -u 0:0 -u root -w "/var/jenkins_home/workspace/KijaniKiosk Pipeline" --volumes-from f85f636db4231310a539926ee5bef37e45aff764413b1c3a23013e1f336eeb1d -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** node:20 cat
+$ docker top b50f46d453b52cede9888496128bfde977d3658ce9a91edf01516d7b92b16c8e -eo pid,comm
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 10 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Lint)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] sh
++ npm ci
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 438 packages, and audited 439 packages in 7s
+
+88 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
++ npm run lint
+
+> kijanikiosk-payments@1.0.0 lint
+> eslint src
+
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] sh
++ npm run build
+
+> kijanikiosk-payments@1.0.0 build
+> mkdir -p dist && cp -r src/* dist/
+
++ test -d dist
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] parallel
+[Pipeline] { (Branch: Test)
+[Pipeline] { (Branch: Security Audit)
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] stage
+[Pipeline] { (Security Audit)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] sh
++ npm test
+
+> kijanikiosk-payments@1.0.0 test
+> jest
+
++ npm audit --audit-level=high
+PASS tests/app.test.js
+  KijaniKiosk Payments
+    ✓ GET / returns service status (21 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.369 s
+Ran all test suites.
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+found 0 vulnerabilities
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Archive)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/KijaniKiosk Pipeline/week5/friday/kijanikiosk-payments
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of $NEXUS_PASS
+[Pipeline] {
+[Pipeline] sh
++ set -e
++ trap rm -f .npmrc EXIT
++ echo Preparing package version...
+Preparing package version...
++ git rev-parse --short HEAD
++ SHORT_SHA=261f438
++ npm version 1.0.0-261f438 --no-git-tag-version
+v1.0.0-261f438
++ echo Creating temporary .npmrc...
+Creating temporary .npmrc...
++ printf %s ****
++ base64 -w0
++ cat
++ echo Publishing package...
+Publishing package...
++ npm publish
+npm notice
+npm notice package: kijanikiosk-payments@1.0.0-261f438
+npm notice Tarball Contents
+npm notice 289B eslint.config.js
+npm notice 500B package.json
+npm notice 428B src/index.js
+npm notice 408B tests/app.test.js
+npm notice Tarball Details
+npm notice name: kijanikiosk-payments
+npm notice version: 1.0.0-261f438
+npm notice filename: kijanikiosk-payments-1.0.0-261f438.tgz
+npm notice package size: 949 B
+npm notice unpacked size: 1.6 kB
+npm notice shasum: 976dad6ccdc710702a87ea70f978d1f30ecaca64
+npm notice integrity: sha512-BXPpa5N1EoaFq[...]RSaPhrIMiAUuQ==
+npm notice total files: 4
+npm notice
+npm notice Publishing to http://172.17.0.2:8081/repository/npm-hosted/ with tag latest and default access
++ kijanikiosk-payments@1.0.0-261f438
++ echo Package published successfully.
+Package published successfully.
++ rm -f .npmrc
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+Pipeline completed successfully.
+[Pipeline] echo
+Artifact available in Nexus.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+$ docker stop --time=1 b50f46d453b52cede9888496128bfde977d3658ce9a91edf01516d7b92b16c8e
+$ docker rm -f --volumes b50f46d453b52cede9888496128bfde977d3658ce9a91edf01516d7b92b16c8e
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
