@@ -88,6 +88,8 @@ pipeline {
                         sh '''
                         set -e
 
+                        trap 'rm -f .npmrc' EXIT
+
                         echo "Preparing package version..."
 
                         SHORT_SHA=$(git rev-parse --short HEAD)
@@ -106,8 +108,6 @@ EOF
                         echo "Publishing package..."
                         npm publish
 
-                        rm -f .npmrc
-
                         echo "Package published successfully."
                         '''
                     }
@@ -124,14 +124,15 @@ EOF
 
         success {
             echo "Pipeline completed successfully."
+            echo "Artifact available in Nexus."
         }
 
         failure {
-            echo "Pipeline failed. Check the build log."
+            echo "Pipeline failed. Check logs and fix before merging."
         }
 
         changed {
-            echo "Pipeline status changed."
+            echo "Pipeline status changed from previous run."
         }
     }
 }
