@@ -11,7 +11,7 @@ pipeline {
         BUILD_DIR = 'dist'
         NODE_ENV = 'test'
 
-        NEXUS_URL = 'http://172.17.0.1:8081/repository/npm-hosted/'
+        NEXUS_URL = "http://172.17.0.2:8081/repository/npm-hosted/"
         NEXUS_CREDENTIALS = 'nexus-credentials'
     }
 
