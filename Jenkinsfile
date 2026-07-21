@@ -86,19 +86,29 @@ pipeline {
                     ]) {
 
                         sh '''
-                            echo "Packaging application..."
-                            npm pack
+                        set -e
 
-                            PACKAGE=$(ls *.tgz)
+                        echo "Preparing package version..."
 
-                            echo "Uploading ${PACKAGE} to Nexus..."
+                        SHORT_SHA=$(git rev-parse --short HEAD)
+                        npm version "1.0.0-${SHORT_SHA}" --no-git-tag-version
 
-                            curl --fail -v \
-                              -u "$NEXUS_USER:$NEXUS_PASS" \
-                              --upload-file "$PACKAGE" \
-                              "${NEXUS_URL}${PACKAGE}"
+                        echo "Creating temporary .npmrc..."
 
-                            echo "Upload completed."
+cat > .npmrc <<EOF
+registry=${NEXUS_URL}
+//172.17.0.2:8081/repository/npm-hosted/:username=${NEXUS_USER}
+//172.17.0.2:8081/repository/npm-hosted/:_password=$(printf "%s" "${NEXUS_PASS}" | base64 -w0)
+//172.17.0.2:8081/repository/npm-hosted/:email=jenkins@example.com
+//172.17.0.2:8081/repository/npm-hosted/:always-auth=true
+EOF
+
+                        echo "Publishing package..."
+                        npm publish
+
+                        rm -f .npmrc
+
+                        echo "Package published successfully."
                         '''
                     }
                 }
