@@ -1,0 +1,34 @@
+Blue/Green Switch Cycle Evidence
+
+Date:
+Mon Aug  3 06:05:06 PM EAT 2026
+
+Switch command:
+sudo bash /opt/kijanikiosk/scripts/switch-env.sh green
+
+Switch output:
+Switched to green
+
+Verification
+
+Health endpoint:
+curl http://localhost/health
+
+Result:
+{"status":"healthy","version":"v1.4.0"}
+
+Environment state:
+
+.active-env
+green
+
+.previous-env
+blue
+
+Nginx active upstream:
+
+upstream kk-api-active {
+    server 127.0.0.1:3001;
+}
+
+Requirement 1: PASSED
