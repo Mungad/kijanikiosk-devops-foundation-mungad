@@ -21,12 +21,12 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 RUN npm ci --omit=dev \
-    && addgroup -S appgroup \
-    && adduser -S appuser -G appgroup
+    && addgroup -S kijani \
+    && adduser -S kijani -G kijani
 
 COPY --from=builder /app/dist ./dist
 
-USER appuser
+USER kijani
 
 EXPOSE 3000
 
