@@ -24,8 +24,7 @@ spec:
       containers:
         - name: kk-payments
           image: host.minikube.internal:8082/kk-payments:1.3.0-d4db9b0
-          imagePullPolicy: Always
-
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
 
