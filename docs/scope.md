@@ -28,8 +28,8 @@ The current KijaniKiosk `kk-payments` deployment runs in a single Kubernetes env
 
 2. Staging and production use the same `kk-payments` Deployment structure while their ConfigMaps contain different environment-specific values, including different `DB_HOST` values.
 
-3. A deliberately broken staging deployment causes the staging validation to fail and prevents the pipeline from reaching the production approval/promotion step.n.
+3. A deliberately broken staging deployment causes the staging validation to fail and prevents the pipeline from reaching the production approval/promotion step.
 
 ## Architecture Diagram
 
-The accompanying architecture diagram shows GitHub, Jenkins, Terraform/Ansible, Kubernetes staging and production namespaces, `kk-payments`, Prometheus, the staging receipt bucket, and the receipt-processing chain. Every connection is labelled with the operation or data flow it carries.
+The architecture diagram shows GitHub, Jenkins, Terraform/Ansible, the Kubernetes cluster, the `kijani-staging` namespace, the existing `kijani-project` production namespace, `kk-payments`, and the deployment and validation flows between them. Each connection is labelled with the operation or data flow it carries.
