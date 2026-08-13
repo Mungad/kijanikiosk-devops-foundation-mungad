@@ -10,22 +10,25 @@ The current KijaniKiosk `kk-payments` deployment runs in a single Kubernetes env
 
 ## What I Will Build
 
-* **Staging infrastructure:** Provision and configure an isolated `kijani-staging` Kubernetes namespace using Terraform and Ansible.
-* **Environment-separated deployment:** Deploy `kk-payments` to staging using the same Deployment manifest as production, with a staging ConfigMap containing environment-specific configuration.
-* **Automated delivery:** Extend Jenkins so a merge to `main` deploys to staging, executes a smoke test, and exposes the production approval gate only after the smoke test succeeds.
-* **Observability:** Add Prometheus monitoring and at least one alert rule for a meaningful `kk-payments` health signal such as pod restarts, latency, or error rate.
-* **Receipt integration:** Connect the staging `kk-payments` deployment to the required `kk-payments-receipts-staging` bucket and verify that the receipt event reaches the Week 10 receipt-processing chain.
+- **Staging infrastructure:** Provision an isolated `kijani-staging` Kubernetes namespace and its supporting configuration using Terraform and Ansible.
+- **Environment-separated deployment:** Deploy `kk-payments` to staging using the same application Deployment pattern as production, with a staging ConfigMap containing environment-specific configuration.
+- **Automated delivery:** Extend Jenkins so a change merged to `main` deploys to staging, waits for Kubernetes rollout health, runs an application smoke test, and exposes a manual production approval gate only after staging validation succeeds.
+- **Rollback protection:** Add automated deployment validation so a failed staging rollout or failed smoke test stops the pipeline before production promotion.
+- **Observability:** Add a lightweight monitoring capability for the staging payment service and demonstrate detection of an intentionally unhealthy deployment.
 
 ## What Is Out of Scope
 
-* **Full production Kubernetes hardening:** HTTPS certificates, ingress authentication, rate limiting, and HPA tuning are excluded because they require additional production infrastructure and workload testing beyond the capstone delivery target.
-* **Replacement of the existing CI/CD platform:** Jenkins, Kubernetes, Terraform, and Ansible remain the delivery foundation; replacing them with another platform would add complexity without demonstrating a new production capability.
+- **Serverless receipt processing:** The repository does not contain an existing receipt-processing chain, so implementing a complete serverless receipt architecture would create a separate project rather than extending the existing KijaniKiosk platform.
+- **Full production Kubernetes hardening:** HTTPS certificates, ingress authentication, rate limiting, and HPA tuning are excluded because they require additional production infrastructure and workload testing beyond the capstone delivery target.
+- **Replacement of the existing CI/CD platform:** Jenkins, Kubernetes, Terraform, and Ansible remain the delivery foundation; replacing them with another platform would add complexity without demonstrating a new production capability.
 
 ## Success Criteria
 
-1. A merge to `main` automatically deploys `kk-payments` to `kijani-staging`, and the Jenkins staging smoke test completes successfully before the production approval gate becomes available.
-2. Staging and production use the same `kk-payments` Deployment manifest while their ConfigMaps contain different environment-specific values, including different `DB_HOST` values.
-3. A staging receipt event is written to `kk-payments-receipts-staging`, the receipt-processing chain executes successfully, and a Prometheus health alert can be deliberately triggered and observed during the live demonstration.
+1. A merge to `main` triggers the Jenkins pipeline, deploys `kk-payments` to `kijani-staging`, waits for a successful Kubernetes rollout, and runs a passing smoke test before the production approval gate becomes available.
+
+2. Staging and production use the same `kk-payments` Deployment structure while their ConfigMaps contain different environment-specific values, including different `DB_HOST` values.
+
+3. A deliberately broken staging deployment causes the staging validation to fail and prevents the pipeline from reaching the production approval/promotion step.n.
 
 ## Architecture Diagram
 
