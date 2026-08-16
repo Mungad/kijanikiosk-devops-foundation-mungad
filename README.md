@@ -22,7 +22,7 @@ The architecture separates infrastructure provisioning, configuration management
 - **kk-payments** — the KijaniKiosk payments service.
 - **Kubernetes probes** — readiness and liveness checks validate application health.
 - **Smoke test** — verifies that the deployed service responds successfully.
-- **Monitoring** — lightweight staging monitoring is planned as part of the remaining capstone work.
+- **Monitoring** — Lightweight staging monitoring is implemented using a log-based error-rate calculation over the latest 100 log lines. Automated alert delivery and production-grade monitoring remain future work.
 
 ## Repository structure
 
