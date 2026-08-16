@@ -1,0 +1,19 @@
+---
+kijani_group: kijanikiosk
+
+packages:
+  - curl
+  - ufw
+  - acl
+
+base_dir: /opt/kijanikiosk
+
+directories:
+  - "{{ base_dir }}/config"
+  - "{{ base_dir }}/shared/logs"
+  - "{{ base_dir }}/health"
+
+users:
+  - kk-api
+  - kk-payments
+  - kk-logs

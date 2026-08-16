@@ -1,0 +1,32 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+
+- name: Create KijaniKiosk group
+  group:
+    name: "{{ kijani_group }}"
+    state: present
+
+- name: Create service users
+  user:
+    name: "{{ item }}"
+    group: "{{ kijani_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    create_home: no
+  loop: "{{ users }}"
+
+- name: Create application directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: "{{ kijani_group }}"
+    mode: "0750"
+  loop: "{{ directories }}"
