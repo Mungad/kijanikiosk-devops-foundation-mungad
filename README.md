@@ -15,7 +15,7 @@ The architecture separates infrastructure provisioning, configuration management
 ### Major components
 
 - **GitHub** — source control and the trigger point for delivery automation.
-- **Jenkins** — planned CI/CD orchestration and production approval gate.
+- **Jenkins** — CI/CD orchestration for staging deployment, automated rollout validation, smoke testing, and the production approval gate.
 - **Terraform** — creates the isolated `kijani-staging` Kubernetes namespace.
 - **Ansible** — verifies the Terraform-created namespace and configures the staging ConfigMap.
 - **Kubernetes** — runs the `kk-payments` application in the staging namespace.
@@ -156,7 +156,7 @@ kubectl rollout status deployment/kk-payments \
   --timeout=120s
 How to run the delivery pipeline
 
-The Jenkins delivery layer is being built incrementally.
+The Jenkins delivery pipeline is implemented for staging validation and controlled production promotion.
 
 The target workflow is:
 
@@ -229,7 +229,7 @@ This confirms that the application is reachable through the Kubernetes Service a
 Known limitations
 The current staging environment runs on a local single-node Minikube cluster rather than a production Kubernetes cluster.
 The staging database endpoint is represented by the environment-specific DB_HOST value but a database workload is not currently provisioned by this Track A implementation.
-Jenkins automated delivery and the production approval gate are still being implemented.
+Jenkins automated staging delivery, rollout validation, smoke testing, and the manual production approval gate are implemented. Production promotion remains a controlled placeholder for the next delivery milestone.
 Production promotion is not yet automated.
 Monitoring and alerting are still being implemented.
 The current deployment uses a local Minikube image/registry workflow and is not yet connected to a production container registry.
