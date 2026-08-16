@@ -5,7 +5,7 @@ ls: cannot access '/opt/kijanikiosk/': No such file or directory
 daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getfacl /opt/kijanikiosk/shared/logs/ 2>/dev/null
 daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ getfacl /opt/kijanikiosk/config/ 2>/dev/null
 daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ sudo ufw status numbered
-[sudo: authenticate] Password:       
+[sudo authentication requested]
 Status: inactive
 daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ apt-mark showhold
 daisy-munga@ubuntu:~/kijanikiosk-devops-foundation/week3/friday$ systemctl list-unit-files | grep kk-
