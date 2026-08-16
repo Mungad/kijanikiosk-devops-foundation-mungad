@@ -1,0 +1,10 @@
+---
+staging_namespace: kijani-staging
+
+staging_config:
+  NODE_ENV: "staging"
+  DB_HOST: "kijani-staging-db"
+  DB_PORT: "5432"
+  LOG_LEVEL: "info"
+  APP_PORT: "3001"
+  MAX_CONNECTIONS: "10"

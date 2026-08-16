@@ -1,0 +1,125 @@
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    environment {
+        STAGING_NAMESPACE = 'kijani-staging'
+        APP_NAME = 'kk-payments'
+        TERRAFORM_DIR = 'capstone/infrastructure/terraform'
+        ANSIBLE_DIR = 'capstone/infrastructure/ansible'
+        K8S_DIR = 'capstone/runtime/kubernetes/staging'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Validate Terraform') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform fmt -check
+                        terraform init -input=false
+                        terraform validate
+                    '''
+                }
+            }
+        }
+
+        stage('Provision Staging') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform apply \
+                          -input=false \
+                          -auto-approve
+                    '''
+                }
+            }
+        }
+
+        stage('Configure Staging') {
+            steps {
+                dir("${ANSIBLE_DIR}") {
+                    sh '''
+                        ansible-galaxy collection install \
+                          -r requirements.yml
+
+                        ansible-playbook \
+                          -i inventory \
+                          playbook.yml
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                sh '''
+                    kubectl apply \
+                      -f "${K8S_DIR}/"
+
+                    kubectl rollout status \
+                      deployment/${APP_NAME} \
+                      -n ${STAGING_NAMESPACE} \
+                      --timeout=120s
+                '''
+            }
+        }
+
+        stage('Smoke Test') {
+            steps {
+                sh '''
+                    kubectl run capstone-smoke-test \
+                      -n ${STAGING_NAMESPACE} \
+                      --rm \
+                      -i \
+                      --restart=Never \
+                      --image=curlimages/curl:8.12.1 \
+                      -- \
+                      curl -fsS \
+                      http://${APP_NAME}:3001/health
+                '''
+            }
+        }
+
+        stage('Production Approval') {
+            steps {
+                input(
+                    message: 'Staging rollout and smoke test passed. Promote to production?',
+                    ok: 'Approve Production'
+                )
+            }
+        }
+
+        stage('Production Promotion') {
+            steps {
+                echo 'Production promotion is approved.'
+                echo 'Production deployment will be implemented in the next delivery milestone.'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Capstone delivery pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Capstone delivery pipeline failed. Production promotion was not completed.'
+        }
+
+        always {
+            echo 'Staging validation pipeline finished.'
+        }
+    }
+}
