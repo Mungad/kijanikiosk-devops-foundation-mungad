@@ -1,0 +1,37 @@
+Requirement 2 – Automated Rollback Evidence
+
+T0: 2026-08-03 19:04:37 - Green service failure introduced.
+
+T1: 2026-08-03 19:04:37 - [MONITOR FAIL] ROLLBACK TRIGGERED
+
+T2: 2026-08-03 19:04:42 - Rollback completed.
+
+Total rollback time:
+5 seconds
+
+Verification after rollback
+
+curl http://localhost/health
+{"status":"healthy","version":"v1.3.0"}
+
+.active-env
+blue
+
+.previous-env
+green
+
+Nginx upstream
+127.0.0.1:3000
+
+Rollback completed automatically with no manual intervention.
+
+Terminal Output
+daisy-munga@ubuntu:~$ sudo bash /opt/kijanikiosk/scripts/post-deploy-monisudo bash /opt/kijanikiosk/scripts/post-deploy-monitor.sh 60
+Monitoring deployment...
+Window: 60s
+2026-08-03 19:04:37 [MONITOR FAIL] ROLLBACK TRIGGERED
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Switched to blue
+2026-08-03 19:04:42 Rollback completed
+
